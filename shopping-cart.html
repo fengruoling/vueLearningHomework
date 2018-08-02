@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>01 - 简易购物车</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+            }
+            p {
+                text-align: center;
+                font-weight: bold;
+                font-size: 20px;
+            }
+            table {
+                width: 60%;
+                border-collapse: collapse;
+                margin: 20px auto;
+                text-align: center;
+                table-layout: fixed;
+            }
+            td, th {
+                line-height: 30px;
+            }
+            button {
+                width: 20px;
+                height: 20px;
+                line-height: 20px;
+                margin: 0 10px;
+                cursor: pointer;
+                outline: none;
+            }
+            .total {
+                font-weight: bold;
+            }
+            .total td:first-child {
+                text-align: right;
+                padding-right: 20px;
+            }
+            [v-cloak] {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <p>购物车</p>
+        <div id="app">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>类别</th>
+                        <th>商品名称</th>
+                        <th>单价（元）</th>
+                        <th>数量</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template v-cloak v-for="(item, key) in goodsList">
+                        <template v-for="(list, index) in item.list">
+                            <tr>
+                                <td v-if="index===0" :rowspan="item.list.length">{{ item.label }}</td>
+                                <td>{{ list.name }}</td>
+                                <td>{{ list.price }}</td>
+                                <td>
+                                    <button @click="minus(key, index)">-</button>
+                                    {{ list.num }}
+                                    <button @click="add(key, index)">+</button>
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+                    <tr v-cloak class="total">
+                        <td colspan="3">合计</td>
+                        <td>{{ totalPrice }}元</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <script src="https://unpkg.com/vue"></script>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    goodsList: {
+                        balls: {
+                            label: '球类用品',
+                            list: [
+                                {
+                                    name: '篮球',
+                                    price: 80,
+                                    num: 1
+                                },
+                                {
+                                    name: '足球',
+                                    price: 60,
+                                    num: 2
+                                },
+                                {
+                                    name: '羽毛球',
+                                    price: 2,
+                                    num: 5
+                                }
+                            ]
+                        },
+                        snake: {
+                            label: '零食',
+                            list: [
+                                {
+                                    name: '卫龙小辣条',
+                                    price: 0.5,
+                                    num: 6
+                                },
+                                {
+                                    name: '雪碧',
+                                    price: 3,
+                                    num: 1
+                                },
+                                {
+                                    name: '乐事薯片',
+                                    price: 9.5,
+                                    num: 3
+                                }
+                            ]
+                        },
+                        clothes: {
+                            label: '服装',
+                            list: [
+                                {
+                                    name: 'T恤',
+                                    price: 99.98,
+                                    num: 2
+                                },
+                                {
+                                    name: '裙子',
+                                    price: 269,
+                                    num: 1
+                                },
+                                {
+                                    name: '裤子',
+                                    price: 79,
+                                    num: 2
+                                }
+                            ]
+                        }
+                    },
+                    totalPrice: 0
+                },
+                created: function() {
+                    this.countTotal;
+                },
+                methods: {
+                    add: function(key, index) {
+                        this.goodsList[key].list[index].num += 1;
+                        this.countTotal;
+                    },
+                    minus: function(key, index) {
+                        if(this.goodsList[key].list[index].num > 1) {
+                            this.goodsList[key].list[index].num -= 1;
+                            this.countTotal;
+                        }
+                    }
+                },
+                computed: {
+                    countTotal: function() {
+                        this.totalPrice = 0;
+                        var list, i, len;
+                        for(var key in this.goodsList) {
+                            list = this.goodsList[key].list;
+                            len = list.length;
+                            for(i = 0; i < len; i++) {
+                                this.totalPrice += list[i].price * list[i].num;
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
