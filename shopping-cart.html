@@ -22,6 +22,9 @@
             td, th {
                 line-height: 30px;
             }
+            th:nth-child(2) {
+                width: 60px;
+            }
             button {
                 width: 20px;
                 height: 20px;
@@ -40,6 +43,9 @@
             [v-cloak] {
                 display: none;
             }
+            input {
+                outline: none;
+            }
         </style>
     </head>
     <body>
@@ -49,28 +55,28 @@
                 <thead>
                     <tr>
                         <th>类别</th>
+                        <th><input type="checkbox" :checked="totalNum === checkedNum" @click="checkEvent"></th>
                         <th>商品名称</th>
                         <th>单价（元）</th>
                         <th>数量</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <template v-cloak v-for="(item, key) in goodsList">
-                        <template v-for="(list, index) in item.list">
-                            <tr>
-                                <td v-if="index===0" :rowspan="item.list.length">{{ item.label }}</td>
-                                <td>{{ list.name }}</td>
-                                <td>{{ list.price }}</td>
-                                <td>
-                                    <button @click="minus(key, index)">-</button>
-                                    {{ list.num }}
-                                    <button @click="add(key, index)">+</button>
-                                </td>
-                            </tr>
-                        </template>
+                    <template v-for="(type, typeIndex) in goodsList">
+                        <tr v-for="(list, index) in type">
+                            <td v-if="index === 0" :rowspan="type.length"> {{ goodsType[typeIndex] }}</td>
+                            <td><input type="checkbox" v-model="list.checked"></td>
+                            <td> {{ list.name }} </td>
+                            <td> {{ list.price }} </td>
+                            <td>
+                                <button @click="minus(typeIndex, index)">-</button>
+                                {{ list.num }}
+                                <button @click="add(typeIndex, index)">+</button>
+                            </td>
+                        </tr>
                     </template>
                     <tr v-cloak class="total">
-                        <td colspan="3">合计</td>
+                        <td colspan="4">合计</td>
                         <td>{{ totalPrice }}元</td>
                     </tr>
                 </tbody>
@@ -81,96 +87,67 @@
             var app = new Vue({
                 el: '#app',
                 data: {
-                    goodsList: {
-                        balls: {
-                            label: '球类用品',
-                            list: [
-                                {
-                                    name: '篮球',
-                                    price: 80,
-                                    num: 1
-                                },
-                                {
-                                    name: '足球',
-                                    price: 60,
-                                    num: 2
-                                },
-                                {
-                                    name: '羽毛球',
-                                    price: 2,
-                                    num: 5
-                                }
-                            ]
-                        },
-                        snake: {
-                            label: '零食',
-                            list: [
-                                {
-                                    name: '卫龙小辣条',
-                                    price: 0.5,
-                                    num: 6
-                                },
-                                {
-                                    name: '雪碧',
-                                    price: 3,
-                                    num: 1
-                                },
-                                {
-                                    name: '乐事薯片',
-                                    price: 9.5,
-                                    num: 3
-                                }
-                            ]
-                        },
-                        clothes: {
-                            label: '服装',
-                            list: [
-                                {
-                                    name: 'T恤',
-                                    price: 99.98,
-                                    num: 2
-                                },
-                                {
-                                    name: '裙子',
-                                    price: 269,
-                                    num: 1
-                                },
-                                {
-                                    name: '裤子',
-                                    price: 79,
-                                    num: 2
-                                }
-                            ]
-                        }
-                    },
-                    totalPrice: 0
-                },
-                created: function() {
-                    this.countTotal;
+                    totalNum: 0,
+                    checkedNum: 0,
+                    goodsType: ['球类用品', '零食', '服装'],
+                    goodsList: [
+                        [
+                            { name: '篮球', price: 80, num: 1 , checked: true},
+                            { name: '足球', price: 60, num: 2 , checked: true},
+                            { name: '羽毛球', price: 2, num: 5 , checked: true}
+                        ],
+                        [ 
+                            { name: '卫龙小辣条', price: 0.5, num: 6 , checked: true},
+                            { name: '雪碧', price: 3, num: 1 , checked: true},
+                            { name: '乐事薯片', price: 9.5, num: 3 , checked: true}
+                        ],
+                        [
+                            { name: 'T恤', price: 99.98, num: 2 , checked: true},
+                            { name: '裙子', price: 269, num: 1 , checked: true},
+                            { name: '裤子', price: 79, num: 2 , checked: true}
+                        ]
+                    ]
                 },
                 methods: {
-                    add: function(key, index) {
-                        this.goodsList[key].list[index].num += 1;
-                        this.countTotal;
+                    add: function(typeIndex, index) {
+                        this.goodsList[typeIndex][index].num += 1;
                     },
-                    minus: function(key, index) {
-                        if(this.goodsList[key].list[index].num > 1) {
-                            this.goodsList[key].list[index].num -= 1;
-                            this.countTotal;
+                    minus: function(typeIndex, index) {
+                        if(this.goodsList[typeIndex][index].num > 1) {
+                            this.goodsList[typeIndex][index].num -= 1;
+                        }
+                    },
+                    checkEvent: function () {
+                        var flag;
+                        // 当前总勾选框是选中状态，点击后应变为非选中状态
+                        if(this.checkedNum === this.totalNum) {
+                            flag = false;
+                            
+                        } else {
+                            flag = true;
+                        }
+                        for(var i = 0; i < this.goodsList.length; i++) {
+                            for(var j = 0; j < this.goodsList[i].length; j++) {
+                                this.goodsList[i][j].checked = flag;
+                            }
                         }
                     }
                 },
                 computed: {
-                    countTotal: function() {
-                        this.totalPrice = 0;
-                        var list, i, len;
-                        for(var key in this.goodsList) {
-                            list = this.goodsList[key].list;
-                            len = list.length;
-                            for(i = 0; i < len; i++) {
-                                this.totalPrice += list[i].price * list[i].num;
+                    totalPrice: function() {
+                        var total = 0;
+                        this.totalNum = 0;
+                        this.checkedNum = 0;
+                        for(var i = 0; i < this.goodsList.length; i++) {
+                            for(var j = 0; j < this.goodsList[i].length; j++) {
+                                this.totalNum++;
+                                if(this.goodsList[i][j].checked) {
+                                    this.checkedNum++;
+                                    total += this.goodsList[i][j].price * this.goodsList[i][j].num;
+                                }
                             }
                         }
+                        return total;
                     }
                 }
             });
