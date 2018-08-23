@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>数字输入框组件</title>
+        <style>
+            #app {
+                text-align: center;
+                margin-top: 50px;
+            }
+            .input-number {
+                display: inline-block;
+            }
+            [v-cloak] {
+                display: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <label>请打分（满分100分）</label>
+            <input-number :min="0" :max="100" v-model="value" :step="10"></input-number>
+            <p v-cloak>当前得分：{{ value }}</p>
+        </div>
+        <script src="https://unpkg.com/vue"></script>
+        <script src="./inputWidget-number.js"></script>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    value: 100
+                }
+            });
+        </script>
+    </body>
+</html>
