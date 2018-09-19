@@ -1,0 +1,88 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+#app {
+    margin: 50px auto 0;
+    width: 800px;
+}
+
+[v-cloak] {
+    display: none;
+}
+
+.tabs {
+    font-size: 14px;
+    color: #657180;
+    width: 100%;
+}
+
+.tabs-bar:after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 1px;
+    background: #d7dde4;
+    margin-top: -1px;
+}
+
+.tabs-tab {
+    display: inline-block;
+    padding: 4px 16px;
+    margin-right: 6px;
+    background: #fff;
+    border: 1px solid #d7dde4;
+    cursor: pointer;
+    position: relative;
+}
+
+.tabs-tab-active {
+    color: #3399ff;
+    border-top: 1px solid #3399ff;
+    border-bottom: 1px solid #fff;
+}
+
+.tabs-tab-active:before {
+    content: '';
+    display: block;
+    height: 1px;
+    background: #3399ff;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.tabs-content {
+    border: 1px solid #d7dde4;
+    border-top: none;
+    width: 100%;
+    overflow-x: hidden;
+    white-space: nowrap;
+}
+
+.tabs-tab-closable {
+    padding-right: 35px;
+}
+
+.tabs-tab .icon-close {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #F83F25;
+    border-radius: 5px;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    text-align: center;
+    line-height: 20px;
+}
+
+.pane {
+    padding: 8px;
+    display: inline-block;
+    width: 100%;
+    transition: transform .5s;
+}
